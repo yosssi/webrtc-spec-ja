@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang='ja'>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport', content='width=device-width,user-scalable=no,maximum-scale=1'>
+    <title>WebRTC 1.0: Real-time Communication Between Browsers W3C Working Draft 10 September 2013</title>
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+  <body>
+    <section class='precautions'>
+      <p class='mt0'>
+        本文書は「<a href='http://www.w3.org/TR/2013/WD-webrtc-20130910/' target='_blank'>WebRTC 1.0: Real-time Communication Between Browsers W3C Working Draft 10 September 2013</a>」の日本語訳です。<br>
+        原文が、本文書の作成時より更新されている可能性があることにご注意ください。<br>
+        また、本文書は参考情報であり、正式文章ではありません。<br>
+        翻訳時に生じた誤りが本文書に含まれる可能性があるため、原文をあわせて参照することを推奨します。<br>
+        誤訳のご指摘などがありましたら、以下の翻訳者へ連絡するか、<a href='https://github.com/yosssi/webrtc-spec-ja' target='_blank'>GitHubリポジトリ</a>よりIssue登録またはPull Requestを実施してください。<br>
+        <br>
+        公開日:　2013/10/14<br>
+        更新日:　2013/10/14<br>
+        翻訳者:　<a href='http://yoss.si/' target='_blank'>Keiji Yoshida</a> &lt;<a href='mailto:yoshida.keiji.84@gmail.com'>yoshida.keiji.84@gmail.com</a>&gt;
+      </p>
+    </section>
+    <header>
+      <h1>WebRTC 1.0: Real-time Communication Between Browsers</h1>
+      <h2>W3C Working Draft 10 September 2013</h2>
+      <dl>
+        <dt>本版:</dt>
+        <dd><a href='http://www.w3.org/TR/2013/WD-webrtc-20130910/' target='_blank'>http://www.w3.org/TR/2013/WD-webrtc-20130910/</a></dd>
+        <dt>最新版:</dt>
+        <dd><a href='http://www.w3.org/TR/webrtc/' target='_blank'>http://www.w3.org/TR/webrtc/</a></dd>
+        <dt>最新の編集草案:</dt>
+        <dd><a href='http://dev.w3.org/2011/webrtc/editor/webrtc.html' target='_blank'>http://dev.w3.org/2011/webrtc/editor/webrtc.html</a></dd>
+        <dt>前版:</dt>
+        <dd><a href='http://www.w3.org/TR/2012/WD-webrtc-20120821/' target='_blank'>http://www.w3.org/TR/2012/WD-webrtc-20120821/</a></dd>
+        <dt>編集者:</dt>
+        <dd>
+          <ul class='list-style-type-none mt0'>
+            <li>Adam Bergkvist, Ericsson</li>
+            <li>Daniel C. Burnett, Voxeo</li>
+            <li>Cullen Jennings, Cisco</li>
+            <li>Anant Narayanan, Mozilla（2012年11月まで）</li>
+          </ul>
+        </dd>
+      </dl>
+      <p class='font-s mt10'>
+        この仕様書の最初の著者はGoogle社のIan Hicksonであり、著作権宣言は以下の通りである:<br>
+        © Copyright 2004-2011 Apple Computer, Inc., Mozilla Foundation, and Opera Software ASA. You are granted a license to use, reproduce and create derivative works of this document.
+      </p>
+      <p class='font-s mt10'>
+        2011年7月26日からの、W3C WebRTC Working Groupによる全ての変更は、次の<a href='http://www.w3.org/Consortium/Legal/2002/ipr-notice-20021231#Copyright' target='_blank'>著作権</a>が適用される:<br>
+        © 2011-2013 <a href='http://www.w3.org/' target='_blank'>W3C</a>® (<a href='http://www.csail.mit.edu/' target='_blank'>MIT</a>, <a href='http://www.ercim.eu/' target='_blank'>ERCIM</a>, <a href='http://www.keio.ac.jp/' target='_blank'>Keio</a>, <a href='http://ev.buaa.edu.cn/' target='_blank'>Beihang</a>), All Rights Reserved. <a href='http://www.w3.org/Consortium/Legal/2002/copyright-documents-20021231' target='_blank'>Document use</a> rules apply.
+      </p>
+      <p class='font-s mt10'>
+        W3Cのサイト上の全ての公開文書には、<a href='http://www.w3.org/Consortium/Legal/2002/ipr-notice-20021231#Legal_Disclaimer' target='_blank'>法的責任</a>と<a href='http://www.w3.org/Consortium/Legal/2002/ipr-notice-20021231#W3C_Trademarks' target='_blank'>商標</a>の規則が適用される。
+      </p>
+    </header>
+    <hr>
+    <section>
+      <h2>要約</h2>
+      <p>
+        この文書は、適切なリアルタイムプロトコルを実装しているブラウザ・デバイス間でのメディアの送受信を可能にする、WebIDLにおけるECMAScriptの一連のAPIを定義する。この仕様は、IETF RTCWEB groupによって策定されているプロトコルの仕様と、Media Capture Task Forceによって策定されているローカルメディアデバイスへアクセスするAPIの仕様とともに策定されている。
+      </p>
+      <h2>この文書の状態</h2>
+      <p>
+        <em>この節では、この文書の公開時の状態を述べる。他の文章がこの文章に取って代わる可能性がある。現在のW3Cの公開文書の一覧と技術レポートの最新版は、http://www.w3.org/TR/の<a href='http://www.w3.org/TR/' target='_blank'>W3C技術レポート索引</a>にて閲覧することができる。</em><br>
+        <br>
+        この文章は、完成・安定したものではなく、商用実装に適したものではない。しかしながら、早期の実験は奨励される。APIはWHATWGにおいて以前策定されたものに基づいている。Web Real-Time Communications Working Groupは、この仕様が大いに発展し続けることを期待している。<br>
+        <br>
+        <a href='http://www.w3.org/TR/2012/WD-webrtc-20120821/' target='_blank'>前回の作業草案</a>よりAPIが大幅に発達し、現在は統計情報管理、DTMF、ピア識別などの中で主要なものとなっている。<a href='#label-17'>変更記録<a>をあわせて参照のこと。<br>
+        <br>
+        この文章はWeb Real-Time Communications Working Groupにより作業草案として公開された。この文章はW3C勧告になることを目的としている。もしこの文章に関して意見を述べたいのであれば、それを<a href='mailto:public-webrtc@w3.org'>public-webrtc@w3.org</a> (<a href='mailto:public-webrtc-request@w3.org?subject=subscribe'>subscribe</a>, <a href='http://lists.w3.org/Archives/Public/public-webrtc/' target='_blank'>archives</a>)へ送信すること。全ての意見を歓迎する。<br>
+        <br>
+        作業草案として公開されることは、W3C会員により承認されることではない。これは草案文章であり、いかなるときでも更新されたり、他の文章によって代替されたり廃止される可能性がある。この文章を作成中のものを超える意味合いで引用することは不適切である。<br>
+        <br>
+        この文章は、<a href='http://www.w3.org/Consortium/Patent-Policy-20040205/' target='_blank'>2004年2月5日のW3C特許政策</a>のもとで活動しているグループによって創作された。W3Cはそのグループの成果物に結び付いて公開された<a href='http://www.w3.org/2004/01/pp-impl/47318/status' target='_blank'>特許情報の一覧</a>を維持している;そのページは特許の開示方法を含んでいる。実際の特許の知識を持ち、また、それが<a href='http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential' target='_blank'>重要な主張</a>を含むと信じている個人は、<a href='http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure' target='_blank'>W3C特許政策の節6</a>に従ってその情報を開示しなければならない。<br>
+      </p>
+      <h2>目次</h2>
+      <ul class='toc'>
+        <li><a href='#label-01'><span class='toc-no'>1.</span> 導入</a></li>
+        <li><a href='#label-02'><span class='toc-no'>2.</span> 適合</a></li>
+        <li><a href='#label-03'><span class='toc-no'>3.</span> 専門用語</a></li>
+        <li><a href='#label-04'><span class='toc-no'>4.</span> ピアツーピア接続</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-04-01'><span class='toc-no'>4.1</span> 導入</a></li>
+          <li><a href='#label-04-02'><span class='toc-no'>4.2</span> 設定</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-04-02-01'><span class='toc-no'>4.2.1</span> RTCConfiguration Type</a></li>
+            <ul class='toc-child'>
+              <li><a href='#label-04-02-01-01'><span class='toc-no'>4.2.1.1</span> Dictionary <span class='idl-def'>RTCConfiguration</span> Members</a></li>
+            </ul>
+          </ul>
+          <ul class='toc-child'>
+            <li><a href='#label-04-02-02'><span class='toc-no'>4.2.2</span> RTCIceServer Type</a></li>
+            <ul class='toc-child'>
+              <li><a href='#label-04-02-02-01'><span class='toc-no'>4.2.2.1</span> Dictionary <span class='idl-def'>RTCIceServer</span> Members</a></li>
+            </ul>
+          </ul>
+          <li><a href='#label-04-03'><span class='toc-no'>4.3</span> RTCPeerConnection Interface</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-04-03-01'><span class='toc-no'>4.3.1</span> 操作</a></li>
+            <li><a href='#label-04-03-02'><span class='toc-no'>4.3.2</span> インタフェース定義</a></li>
+            <ul class='toc-child'>
+              <li><a href='#label-04-03-02-01'><span class='toc-no'>4.3.2.1</span> コンストラクタ</a></li>
+              <li><a href='#label-04-03-02-02'><span class='toc-no'>4.3.2.2</span> 属性</a></li>
+              <li><a href='#label-04-03-02-03'><span class='toc-no'>4.3.2.3</span> メソッド</a></li>
+            </ul>
+          </ul>
+          <ul class='toc-child'>
+            <li><a href='#label-04-03-03'><span class='toc-no'>4.3.3</span> ガベージコレクション</a></li>
+          </ul>
+          <li><a href='#label-04-04'><span class='toc-no'>4.4</span> 状態定義</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-04-04-01'><span class='toc-no'>4.4.1</span> RTCPeerState Enum</a></li>
+            <li><a href='#label-04-04-02'><span class='toc-no'>4.4.2</span> RTCIceGatheringState Enum</a></li>
+            <li><a href='#label-04-04-03'><span class='toc-no'>4.4.3</span> RTCIceConnectionState Enum</a></li>
+          </ul>
+          <li><a href='#label-04-05'><span class='toc-no'>4.5</span> コールバック定義</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-04-05-01'><span class='toc-no'>4.5.1</span> RTCPeerConnectionErrorCallback</a></li>
+            <ul class='toc-child'>
+              <li><a href='#label-04-05-01-01'><span class='toc-no'>4.5.1.1</span> Callback <span class='idl-def'>RTCPeerConnectionErrorCallback</span> Parameters</a></li>
+            </ul>
+          </ul>
+          <li><a href='#label-04-06'><span class='toc-no'>4.6</span> 例外処理</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-04-06-01'><span class='toc-no'>4.6.1</span> 原則</a></li>
+            <li><a href='#label-04-06-02'><span class='toc-no'>4.6.2</span> RTCSdpError</a></li>
+            <ul class='toc-child'>
+              <li><a href='#label-04-06-02-01'><span class='toc-no'>4.6.2.1</span> 属性</a></li>
+            </ul>
+          </ul>
+          <li><a href='#label-04-07'><span class='toc-no'>4.7</span> Session Description Model</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-04-07-01'><span class='toc-no'>4.7.1</span> RTCSdpType</a></li>
+            <li><a href='#label-04-07-02'><span class='toc-no'>4.7.2</span> RTCSessionDescription Class</a></li>
+            <ul class='toc-child'>
+              <li><a href='#label-04-07-02-01'><span class='toc-no'>4.7.2.1</span> コンストラクタ</a></li>
+              <li><a href='#label-04-07-02-02'><span class='toc-no'>4.7.2.2</span> 属性</a></li>
+              <li><a href='#label-04-07-02-03'><span class='toc-no'>4.7.2.3</span> シリアライザ</a></li>
+              <li><a href='#label-04-07-02-04'><span class='toc-no'>4.7.2.4</span> Dictionary <span class='idl-def'>RTCSessionDescriptionInit</span> Members</a></li>
+            </ul>
+            <li><a href='#label-04-07-03'><span class='toc-no'>4.7.3</span> RTCSessionDescriptionCallback</a></li>
+            <ul class='toc-child'>
+              <li><a href='#label-04-07-03-01'><span class='toc-no'>4.7.3.1</span> Callback <span class='idl-def'>RTCSessionDescriptionCallback</span> Parameters</a></li>
+            </ul>
+          </ul>
+          <li><a href='#label-04-08'><span class='toc-no'>4.8</span> Interfaces for Connectivity Establishment</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-04-08-01'><span class='toc-no'>4.8.1</span> RTCIceCandidate Type</a></li>
+            <ul class='toc-child'>
+              <li><a href='#label-04-08-01-01'><span class='toc-no'>4.8.1.1</span> コンストラクタ</a></li>
+              <li><a href='#label-04-08-01-02'><span class='toc-no'>4.8.1.2</span> 属性</a></li>
+              <li><a href='#label-04-08-01-03'><span class='toc-no'>4.8.1.3</span> シリアライザ</a></li>
+              <li><a href='#label-04-08-01-04'><span class='toc-no'>4.8.1.4</span> Dictionary <span class='idl-def'>RTCIceCandidateInit</span> Members</a></li>
+            </ul>
+            <li><a href='#label-04-08-02'><span class='toc-no'>4.8.2</span> RTCPeerConnectionIceEvent</a></li>
+            <ul class='toc-child'>
+              <li><a href='#label-04-08-02-01'><span class='toc-no'>4.8.2.1</span> コンストラクタ</a></li>
+              <li><a href='#label-04-08-02-02'><span class='toc-no'>4.8.2.2</span> 属性</a></li>
+              <li><a href='#label-04-08-02-03'><span class='toc-no'>4.8.2.3</span> Dictionary <span class='idl-def'>RTCPeerConnectionIceEventInit</span> Members</a></li>
+            </ul>
+          </ul>
+        </ul>
+        <li><a href='#label-05'><span class='toc-no'>5.</span> Peer-to-peer Data API</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-05-01'><span class='toc-no'>5.1</span> RTCPeerConnection Interface Extensions</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-05-01-01'><span class='toc-no'>5.1.1</span> 属性</a></li>
+            <li><a href='#label-05-01-02'><span class='toc-no'>5.1.2</span> メソッド</a></li>
+          </ul>
+          <li><a href='#'><span class='toc-no'>5.2</span> RTCDataChannel</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-05-02-01'><span class='toc-no'>5.2.1</span> 属性</a></li>
+            <li><a href='#label-05-02-02'><span class='toc-no'>5.2.2</span> メソッド</a></li>
+            <li><a href='#label-05-02-03'><span class='toc-no'>5.2.3</span> Dictionary <span class='idl-def'>RTCDataChannelInit</span> Members</a></li>
+          </ul>
+          <li><a href='#label-05-03'><span class='toc-no'>5.3</span> RTCDataChannelEvent</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-05-03-01'><span class='toc-no'>5.3.1</span> コンストラクタ</a></li>
+            <li><a href='#label-05-03-02'><span class='toc-no'>5.3.2</span> 属性</a></li>
+            <li><a href='#label-05-03-03'><span class='toc-no'>5.3.3</span> Dictionary <span class='idl-def'>RTCDataChannelEventInit</span> Members</a></li>
+          </ul>
+          <li><a href='#label-05-04'><span class='toc-no'>5.4</span> ガベージコレクション</a></li>
+        </ul>
+        <li><a href='#label-06'><span class='toc-no'>6.</span> Peer-to-peer DTMF</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-06-01'><span class='toc-no'>6.1</span> RTCPeerConnection Interface Extensions</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-06-01-01'><span class='toc-no'>6.1.1</span> メソッド</a></li>
+          </ul>
+          <li><a href='#label-06-02'><span class='toc-no'>6.2</span> RTCDTMFSender</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-06-02-01'><span class='toc-no'>6.2.1</span> 属性</a></li>
+            <li><a href='#label-06-02-02'><span class='toc-no'>6.2.2</span> メソッド</a></li>
+          </ul>
+          <li><a href='#label-06-03'><span class='toc-no'>6.3</span> RTCDTMFToneChangeEvent</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-06-03-01'><span class='toc-no'>6.3.1</span> コンストラクタ</a></li>
+            <li><a href='#label-06-03-02'><span class='toc-no'>6.3.2</span> 属性</a></li>
+            <li><a href='#label-06-03-03'><span class='toc-no'>6.3.3</span> Dictionary <span class='idl-def'> RTCDTMFToneChangeEventInit</span> Members</a></li>
+          </ul>
+        </ul>
+        <li><a href='#label-07'><span class='toc-no'>7.</span> Statistics Model</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-07-01'><span class='toc-no'>7.1</span> 導入</a></li>
+          <li><a href='#label-07-02'><span class='toc-no'>7.2</span> RTCPeerConnection Interface Extensions</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-07-02-01'><span class='toc-no'>7.2.1</span> メソッド</a></li>
+          </ul>
+          <li><a href='#label-07-03'><span class='toc-no'>7.3</span> RTCStatsCallback</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-07-03-01'><span class='toc-no'>7.3.1</span> Callback <span class='idl-def'>RTCStatsCallback</span> Parameters</a></li>
+          </ul>
+          <li><a href='#label-07-04'><span class='toc-no'>7.4</span> RTCStatsReport Object</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-07-04-01'><span class='toc-no'>7.4.1</span> メソッド</a></li>
+          </ul>
+          <li><a href='#label-07-05'><span class='toc-no'>7.5</span> RTCStats Dictionary</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-07-05-01'><span class='toc-no'>7.5.1</span> Dictionary <span class='idl-def'>RTCStats</span> Members</a></li>
+          </ul>
+          <li><a href='#label-07-06'><span class='toc-no'>7.6</span> Derived Stats Dictionaries</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-07-06-01'><span class='toc-no'>7.6.1</span> Dictionary <span class='idl-def'>RTCRTPStreamStats</span> Members</a></li>
+            <li><a href='#label-07-06-02'><span class='toc-no'>7.6.2</span> Dictionary <span class='idl-def'>RTCInboundRTPStreamStats</span> Members</a></li>
+            <li><a href='#label-07-06-03'><span class='toc-no'>7.6.3</span> Dictionary <span class='idl-def'>RTCOutboundRTPStreamStats</span> Members</a></li>
+          </ul>
+          <li><a href='#label-07-07'><span class='toc-no'>7.7</span> 例</a></li>
+        </ul>
+        <li><a href='#label-08'><span class='toc-no'>8.</span> Identity</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-08-01'><span class='toc-no'>8.1</span> Identity Provider Interaction</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-08-01-01'><span class='toc-no'>8.1.1</span> Peer-Connection/IdP Communications</a></li>
+          </ul>
+          <li><a href='#label-08-02'><span class='toc-no'>8.2</span> Requesting Assertions</a></li>
+          <li><a href='#label-08-03'><span class='toc-no'>8.3</span> Verifying Assertions</a></li>
+        </ul>
+        <li><a href='#label-09'><span class='toc-no'>9.</span> RTCPeerConnection Interface Extensions</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-09-01'><span class='toc-no'>9.1</span> 属性</a></li>
+          <li><a href='#label-09-02'><span class='toc-no'>9.2</span> メソッド</a></li>
+        </ul>
+        <li><a href='#label-10'><span class='toc-no'>10.</span> RTCIdentityAssertion Type</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-10-01'><span class='toc-no'>10.1</span> Dictionary <span class='idl-def'>RTCIdentityAssertion</span> Members</a></li>
+        </ul>
+        <li><a href='#label-11'><span class='toc-no'>11.</span> 例</a></li>
+        <li><a href='#label-12'><span class='toc-no'>12.</span> Media Stream API Extensions for Network Use</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-12-01'><span class='toc-no'>12.1</span> 導入</a></li>
+          <li><a href='#label-12-02'><span class='toc-no'>12.2</span> MediaStream</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-12-02-01'><span class='toc-no'>12.2.1</span> id</a></li>
+            <li><a href='#label-12-02-02'><span class='toc-no'>12.2.2</span> Events on MediaStream</a></li>
+          </ul>
+          <li><a href='#label-12-03'><span class='toc-no'>12.3</span> MediaStreamTrack</a></li>
+          <li><a href='#label-12-04'><span class='toc-no'>12.4</span> MediaStreamEvent</a></li>
+          <ul class='toc-child'>
+            <li><a href='#label-12-04-01'><span class='toc-no'>12.4.1</span> コンストラクタ</a></li>
+            <li><a href='#label-12-04-02'><span class='toc-no'>12.4.2</span> 属性</a></li>
+            <li><a href='#label-12-04-03'><span class='toc-no'>12.4.3</span> Dictionary <span class='idl-def'>MediaStreamEventInit</span> Members</a></li>
+          </ul>
+        </ul>
+        <li><a href='#label-13'><span class='toc-no'>13.</span> 例とコールフロー</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-13-01'><span class='toc-no'>13.1</span> 単純なP2P接続の例</a></li>
+          <li><a href='#label-13-02'><span class='toc-no'>13.2</span> 高度なP2P接続の例</a></li>
+          <li><a href='#label-13-03'><span class='toc-no'>13.3</span> P2Pデータ例</a></li>
+          <li><a href='#label-13-04'><span class='toc-no'>13.4</span> ブラウザ間のコールフロー</a></li>
+          <li><a href='#label-13-05'><span class='toc-no'>13.5</span> DTMF例</a></li>
+        </ul>
+        <li><a href='#label-14'><span class='toc-no'>14.</span> イベントサマリ</a></li>
+        <li><a href='#label-15'><span class='toc-no'>15.</span> セキュリティの考慮</a></li>
+        <li><a href='#label-16'><span class='toc-no'>16.</span> IANA登録</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-16-01'><span class='toc-no'>16.1</span> 制約</a></li>
+        </ul>
+        <li><a href='#label-17'><span class='toc-no'>17.</span> 変更記録</a></li>
+        <li><a href='#label-A'><span class='toc-no'>A.</span> 謝辞</a></li>
+        <li><a href='#label-B'><span class='toc-no'>B.</span> 参考文献</a></li>
+        <ul class='toc-child'>
+          <li><a href='#label-B-01'><span class='toc-no'>B.1</span> 規定文献</a></li>
+          <li><a href='#label-B-02'><span class='toc-no'>B.2</span> 参考文献</a></li>
+        </ul>
+      </ul>
+      <h2><span id='label-01'>1. 導入</span></h2>
+      <p>
+        この節は非規範的なものである。<br>
+        <br>
+        この仕様に含まれるHTMLによるビデオ会議には、多くの面が存在する:<br>
+        <br>
+        <ul class='ml30 mt0'>
+          <li>ICE、STUN、TURNなどのNAT越え技術を用いてリモートピアへ接続すること</li>
+          <li>ローカルで生成したストリームをリモートピアへ送信し、リモートピアからストリームを受信すること</li>
+          <li>任意のデータをリモートピアへ直接送信すること</li>
+        </ul>
+        <br>
+        この文章はこれらの機能のために使用されるAPIを定義する。この仕様は、<a href='http://datatracker.ietf.org/wg/rtcweb/' target='_blank'>IETF RTCWEB group</a>によって策定されているプロトコルの仕様と、<a href='http://datatracker.ietf.org/wg/rtcweb/' target='_blank'>Media Capture Task Force</a>によって策定されているローカルメディアデバイスへアクセスするAPIの仕様とともに策定されている。
+      </p>
+      <h2><span id='label-02'>2. 適合</span></h2>
+      <p>
+        非規範的とされた節と同様に、この仕様書の全ての指針、図表、例、注記は非規範的なものである。この仕様書の他のものは規範的なものである。
+      </p>
+      <p>
+        用語<span class='keyword'>しなければならない(MUST)</span>、<span class='keyword'>してはならない(MUST NOT)</span>、<span class='keyword'>必須である(REQUIRED)</span>、<span class='keyword'>すべきである(SHOULD)</span>、<span class='keyword'>すべきでない(SHOULD NOT)</span>、<span class='keyword'>望ましい(RECOMMENDED)</span>、<span class='keyword'>してもよい(MAY)</span>、<span class='keyword'>任意の(OPTIONAL)</span>は[<a href='http://www.w3.org/TR/2013/WD-webrtc-20130910/#bib-RFC2119' target='_blank'>RFC2119</a>]に記載されている通り解釈されなければならない。
+      </p>
+      <p>
+        この仕様は単一の製品（インターフェースを実装している<strong>ユーザエージェント</strong>）に適用される適合基準を定義する。
+      </p>
+      <p>
+        この仕様で定義されているAPIを実装するためにECMAScriptを使用する実装は、この仕様がWeb IDLの仕様と専門用語を使用しているため、Web IDLの仕様[<a href='#bib-WEBIDL'>WEBIDL</a>]で定義されているECMAScriptバインディングに適合するようにそのAPIを実装しなければならない。
+      </p>
+      <h2><span id='label-03'>3. 専門用語</span></h2>
+      <p>
+        <a href='http://www.w3.org/html/wg/drafts/html/master/webappapis.html#eventhandler' target='_blank'>EventHandler</a>インターフェースは、[<a href='#bib-HTML5'>HTML5</a>]で定義されている通り、イベントハンドラのために使用されるコールバックを表す。
+      </p>
+      <p>
+        <a href='http://www.w3.org/html/wg/drafts/html/master/webappapis.html#queue-a-task' target='_blank'>タスクをキューへ挿入すること</a>と<a href='http://www.w3.org/html/wg/drafts/html/master/webappapis.html#fire-a-simple-event' target='_blank'>単一のイベントを発火させること</a>の概念は、[<a href='#bib-HTML5'>HTML5</a>]で定義される。
+      </p>
+      <p>
+        用語<a href='http://www.w3.org/html/wg/drafts/html/master/webappapis.html#event-handlers' target='_blank'>event handlers</a>と<a href='http://www.w3.org/html/wg/drafts/html/master/webappapis.html#event-handler-event-type' target='_blank'>event handler event types</a>は、[<a href='#bib-HTML5'>HTML5</a>]で定義される。
+      </p>
+      <h2><span id='label-04'>4. ピアツーピア接続</span></h2>
+      <h3><span id='label-04-01'>4.1 導入</span></h2>
+      <p>
+        <a href='#idl-def-RTCPeerConnection' class='idl-def'>RTCPeerConnection</a>は、二人のユーザがブラウザ間で直接通信することを可能にする。通信は、様々な方法で提供されるシグナリングチャネルを経由して仲介されるが、大抵はページ上のスクリプトにより（例えば、<span class='idl-def font-normal'>XMLHttpRequest</span>を用いて）サーバ経由で仲介される。
+      </p>
+      <h3><span id='label-04-02'>4.2 設定</span></h2>
+      <h4><span id='label-04-02-01'>4.2.1 RTCConfiguration Type</span></h2>
+      <pre class='web-idl-def'><span class='web-idl-def-header'>WebIDL</span>
+<div class='web-idl-def-content'>dictionary <span class='blue bold'>RTCConfiguration</span> {
+  <span class='blue'>sequence&lt;</span><a href='#idl-def-RTCIceServer' class='idl-def'>RTCIceServer</a><span class='blue'>&gt;</span> <a href='#widl-RTCConfiguration-iceServers' class='idl-def font-normal border-dotted-orange'>iceServers</a>;
+};</div></pre>
+      <h4><span id='label-04-02-01-01'>4.2.1.1 Dictionary <a href='#idl-def-RTCConfiguration' class='idl-def'>RTCConfiguration</a> Members</span></h4>
+      <pre><span class='marked bold'>iceServers</span> of type <span class='blue'>sequence&lt;RTCIceServer&gt;</span>
+
+ICEによって使用される、使用可能なSTUN、TURNサーバの配列</pre>
+      <h4><span id='label-04-02-02'>4.2.2 RTCIceServer Type</span></h2>
+      <pre class='web-idl-def'><span class='web-idl-def-header'>WebIDL</span>
+<div class='web-idl-def-content'>dictionary <span class='blue bold'>RTCConfiguration</span> {
+  <span class='blue'>sequence&lt;</span><a href='#idl-def-RTCIceServer' class='idl-def'>RTCIceServer</a><span class='blue'>&gt;</span> <a href='#widl-RTCConfiguration-iceServers' class='idl-def font-normal border-dotted-orange'>iceServers</a>;
+};</div></pre>
+      <h2><span id='label-17'>17. 変更記録</span></h2>
+    </section>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-webrtc-spec-ja
+WebRTC仕様日本語訳
 ==============
-
-webrtc-spec-ja
+WebRTCの仕様の日本語訳を格納したリポジトリです。
+誤訳などのご指摘は、Issue、Pull Requestなどにてお願いいたします。

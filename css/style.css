@@ -1,0 +1,145 @@
+html {
+  font-size: 85%;
+  line-height: 1.5;
+  height: 100%;
+  font-family: sans-serif;
+}
+body {
+  padding: 1rem;
+}
+h1 {
+  margin: 0;
+  font-size: 1.7rem;
+  color: #005A9C;
+  font-family: sans-serif, 'Helvetica Neue', 'Helvetica', serif;
+  margin-top: 3rem;
+}
+h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #005A9C;
+  font-family: sans-serif, 'Helvetica Neue', 'Helvetica', serif;
+  margin-top: 1.5rem;
+}
+h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #005A9C;
+  font-family: sans-serif, 'Helvetica Neue', 'Helvetica', serif;
+  margin-top: 1.5rem;
+}
+h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-family: sans-serif, 'Helvetica Neue', 'Helvetica', serif;
+  margin-top: 1.5rem;
+}
+dl {
+  margin: 1.5rem 0 0 0;
+}
+dt {
+  font-weight: bold;
+}
+dl dt:not(:first-child) {
+  margin-top: 0.5rem;
+}
+p {
+  margin: 1.5rem 0 0 0;
+}
+ul {
+  margin: 1.5rem 0 0 0;
+  padding: 0;
+}
+hr {
+  margin: 1.5rem 0 0 0;
+}
+pre {
+  margin: 1.5rem 0 0 3rem;
+  padding: 0;
+  font-family: sans-serif;
+}
+a:hover {
+  background-color: #fefdaa;
+}
+.mt0 {
+  margin-top: 0;
+}
+.mt10 {
+  margin-top: 1.0rem;
+}
+.mt15 {
+  margin-top: 1.5rem;
+}
+.ml30 {
+  margin-left: 3.0rem;
+}
+.precautions {
+  border: 1px solid #cc9999;;
+  color: #880000;
+  background-color: #fff5f5;
+  padding: 1rem;
+}
+.list-style-type-none {
+  list-style-type: none;
+}
+.font-s {
+  font-size: 0.9rem;
+}
+.toc {
+  list-style-type: none;
+  margin-left: 3rem;
+}
+.toc a {
+  text-decoration: none;
+  padding: 0.2rem 0;
+}
+.toc-no {
+  color: #000000;
+}
+.toc-child {
+  list-style-type: none;
+  margin-left: 3rem;
+  margin-top: 0;
+}
+.idl-def {
+  font-size: 0.9rem;
+  color: #fc692f;
+  font-weight: bold;
+}
+.font-normal {
+  font-weight: normal;
+}
+a.idl-def {
+  text-decoration: none;
+}
+.keyword {
+  font-size: 0.9rem;
+  color: #880000;
+  font-weight: bold;
+}
+.web-idl-def {
+  border-top: 1px solid #90b8de;
+  border-bottom: 1px solid #90b8de;
+  margin-left: 3rem;
+}
+.web-idl-def-header {
+  background-color: #90b8de;
+  color: #ffffff;
+  font-weight: bold;
+  padding: 0.2rem 2rem;
+}
+.web-idl-def-content {
+  margin: 1rem 1rem;
+}
+.blue {
+  color: #005A9C;
+}
+.bold {
+  font-weight: bold;
+}
+.border-dotted-orange {
+  border-bottom: 1px dotted #fc692f;
+}
+.marked {
+  background-color: #fefdaa;
+}
